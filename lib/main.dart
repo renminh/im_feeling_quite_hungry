@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:im_feeling_quite_hungry/home.dart' show HomePage;
-
-ThemeData theme = ThemeData(
-	// fill this in for the theme
-);
+import 'package:im_feeling_quite_hungry/ifqh.dart';
+import 'package:provider/provider.dart';
+import 'controller.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => Controller())
+    ],
+      child: const MainApp()
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -14,10 +18,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
 			debugShowCheckedModeBanner: false,
 			title: "I'm Feeling Quite Hungry!",
-			//theme: theme,
+			theme: ifqhTheme,
       home: HomePage(),
 		);
   }

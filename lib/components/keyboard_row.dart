@@ -1,25 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:im_feeling_quite_hungry/ifqh.dart';
+import 'package:provider/provider.dart';
+import 'package:im_feeling_quite_hungry/controller.dart';
 
 class KeyboardRow extends StatelessWidget {
-	const KeyboardRow({super.key});
+	KeyboardRow({super.key, required this.min, required this.max});
 
+  final int min, max;
 	@override
 	Widget build(BuildContext context) {
-		List<Widget> letters = [];
+		return Consumer<Controller>(
+      builder: (_, notifier, __) {
+        List<Widget> keys = [];
+        final Size size = MediaQuery.sizeOf(context);
+        
+        for (int i = min; i <= max; i++) {
+          final String keyText = answerKeyHashmap.keys.elementAt(i);
+          final AnswerType keyType = answerKeyHashmap.values.elementAt(i);
 
-		for (int i = 0; i < answerKeyHashmap.length; i++) {
-			//print(answerHashmap.keys.elementAt(i));
-			//print(answerHashmap.values.elementAt(i));
-			String letter = answerKeyHashmap.keys.elementAt(i);
-			Widget letterWidget = Container(
-				child: Text(letter),
-			);
-			letters.add(letterWidget);
-		}
+          double width = keyText == 'ENTER' || keyText == 'BACK' 
+                          ? size.width * 0.13 
+                          : size.width * 0.085;
 
-		return Row(
-			children: letters
-		);
+          Color color = keyboardColorDefaultGrey;
+          Color textColor = Colors.black;
+
+          if (keyType != AnswerType.notAnswered) {
+            textColor = Colors.white;
+          }
+
+          if (keyType == AnswerType.correct) {
+            color = keyboardColorCorrectGreen;
+          } else if (keyType == AnswerType.contains) {
+            color = keyboardColorContainsYellow;
+          } else if (keyType == AnswerType.incorrect) {
+            color = keyboardColorIncorrectGrey;
+          }
+          
+          Material textDesign = Material(
+            color: color,
+            child: InkWell(
+              onTap: () {
+                Provider.of<Controller>(context, listen: false)
+                  .setKeyTapped(value: keyText);
+              },
+              child: Center(child: Text(keyText, style: TextStyle(color: textColor),)),
+          ));
+          
+          ClipRRect textButtonDesign = ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(6),
+            child: SizedBox(
+              width: width,
+              height: size.height * 0.090,
+              child: textDesign,
+          ));
+
+          Widget keyWidget = Padding(
+            padding: EdgeInsetsGeometry.all(size.width * 0.006),
+            child: textButtonDesign
+            );
+          keys.add(keyWidget);
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: keys
+        );
+      }
+    );
 	}
 }

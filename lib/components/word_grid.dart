@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:im_feeling_quite_hungry/ifqh.dart';
+import 'package:provider/provider.dart';
+import 'package:im_feeling_quite_hungry/controller.dart';
 
 class WordGrid extends StatelessWidget {
 	int numLetters = 5;
 	int numWords = 5;
 
+  WordGrid({super.key});
+
 	@override
 	Widget build(BuildContext context) {
 		return Container(
-			color: Colors.yellow,
+			//color: Colors.yellow,
 			child: GridView.builder(
 				padding: EdgeInsets.fromLTRB(36, 20, 36, 20),
 				// to prevent scrolling we use physics
@@ -32,9 +37,7 @@ class WordGrid extends StatelessWidget {
 						decoration: BoxDecoration(
 							border: Border.all(),
 						),
-						child: Center(
-							child:Text(index.toString()),
-						),
+						child: Tile(index: index),
 					);
 				},
 			),
@@ -43,3 +46,57 @@ class WordGrid extends StatelessWidget {
 }
 
 
+
+class Tile extends StatefulWidget {
+  const Tile ({super.key, required this.index});
+
+  final int index;
+
+  @override
+  State<Tile> createState() => TileState();
+}
+
+class TileState extends State<Tile> {
+
+  Color bgColor = Colors.transparent;
+  Color textColor = Colors.black;
+  late AnswerType answerType;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<Controller> (
+      builder:(_, notifier, __) {
+        String text = "";
+
+        if (widget.index < notifier.tilesEntered.length) {
+          text = notifier.tilesEntered[widget.index].letter;
+          answerType = notifier.tilesEntered[widget.index].type;
+
+          if (answerType != AnswerType.notAnswered) {
+            textColor = Colors.white;
+          }
+
+          if (answerType == AnswerType.correct) {
+            bgColor = tileColorCorrectGreen;
+          } else if (answerType == AnswerType.contains) {
+            bgColor = tileColorContainsYellow;
+          } else if (answerType == AnswerType.incorrect) {
+            bgColor = tileColorIncorrectGrey;
+          }
+
+          return Container(
+            color: bgColor,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Padding(
+                padding: const EdgeInsetsGeometry.all(6.0),
+                child: Text(text, style: TextStyle(color: textColor))
+              )
+            )
+          );
+        } else {
+          return const SizedBox();
+        }
+    });
+  }
+}
