@@ -22,7 +22,7 @@ class KeyboardRow extends StatelessWidget {
                           ? size.width * 0.13 
                           : size.width * 0.085;
 
-          Color color = keyboardColorDefaultGrey;
+          Color color = Theme.of(context).primaryColorLight;
           Color textColor = Colors.black;
 
           if (keyType != AnswerType.notAnswered) {
@@ -34,7 +34,9 @@ class KeyboardRow extends StatelessWidget {
           } else if (keyType == AnswerType.contains) {
             color = keyboardColorContainsYellow;
           } else if (keyType == AnswerType.incorrect) {
-            color = keyboardColorIncorrectGrey;
+            color = Theme.of(context).primaryColorDark;
+          } else {
+            textColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black;
           }
           
           Material textDesign = Material(
@@ -44,7 +46,9 @@ class KeyboardRow extends StatelessWidget {
                 Provider.of<Controller>(context, listen: false)
                   .setKeyTapped(value: keyText);
               },
-              child: Center(child: Text(keyText, style: TextStyle(color: textColor),)),
+              child: Center(child: Text(keyText, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: textColor,
+              ))),
           ));
           
           ClipRRect textButtonDesign = ClipRRect(

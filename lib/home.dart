@@ -37,6 +37,18 @@ class HomePageState extends State<HomePage> {
 				title: Text("IFQH"),
 				centerTitle: true,
 				elevation: 0,
+        actions: <Widget>[
+          TextButton(onPressed: () {
+                final r = Random().nextInt(words.length);
+                word = words[r];
+
+                WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                  Provider.of<Controller>(context, listen: false).restartGame();
+                  Provider.of<Controller>(context, listen: false).setCorrectWord(word: word);
+                });
+
+          }, child: const Text('Restart')),
+        ],
 			),
 
 			//  Column is used to hold the grid and keyboard area
@@ -45,6 +57,7 @@ class HomePageState extends State<HomePage> {
 				// to whatever element is along with it
 				children: [
           Divider(
+            height: 1,
             thickness: 2,
           ),
 					Expanded(

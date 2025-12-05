@@ -32,13 +32,7 @@ class WordGrid extends StatelessWidget {
 					crossAxisCount: numLetters,
 				),
 				itemBuilder: (context, index) {
-					return Container(
-						// for creating a border
-						decoration: BoxDecoration(
-							border: Border.all(),
-						),
-						child: Tile(index: index),
-					);
+					return Tile(index: index);
 				},
 			),
 		);
@@ -57,16 +51,16 @@ class Tile extends StatefulWidget {
 }
 
 class TileState extends State<Tile> {
-
-  Color bgColor = Colors.transparent;
-  Color textColor = Colors.black;
-  late AnswerType answerType;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<Controller> (
       builder:(_, notifier, __) {
+        Color borderColor = Color.fromARGB(255, 211, 214, 215);
+        Color textColor = Colors.black;
+        late AnswerType answerType;
+        Color bgColor = Colors.transparent;
         String text = "";
+        Color fontColor = Colors.white;
 
         if (widget.index < notifier.tilesEntered.length) {
           text = notifier.tilesEntered[widget.index].letter;
@@ -77,25 +71,42 @@ class TileState extends State<Tile> {
           }
 
           if (answerType == AnswerType.correct) {
+            borderColor = Colors.transparent;
             bgColor = tileColorCorrectGreen;
           } else if (answerType == AnswerType.contains) {
+            borderColor = Colors.transparent;
             bgColor = tileColorContainsYellow;
           } else if (answerType == AnswerType.incorrect) {
-            bgColor = tileColorIncorrectGrey;
+            borderColor = Colors.transparent;
+            bgColor = Theme.of(context).primaryColorDark;
+          } else {
+            borderColor = Colors.transparent;
+            fontColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black;
+            bgColor = const Color.fromARGB(255, 199, 199, 199);    
           }
 
           return Container(
-            color: bgColor,
+            decoration: BoxDecoration(
+              color: bgColor,
+              border: Border.all(
+                color: borderColor,
+            )),
             child: FittedBox(
               fit: BoxFit.contain,
               child: Padding(
                 padding: const EdgeInsetsGeometry.all(6.0),
-                child: Text(text, style: TextStyle(color: textColor))
+                child: Text(text, style: TextStyle(color: fontColor))
               )
             )
           );
         } else {
-          return const SizedBox();
+          return Container(
+            decoration: BoxDecoration(
+              color: bgColor,
+              border: Border.all(
+                color: borderColor,
+            )),
+          );
         }
     });
   }

@@ -4,6 +4,7 @@ import 'package:im_feeling_quite_hungry/models/tile_model.dart';
 
 class Controller extends ChangeNotifier {
   String correctWord = "";
+  bool wonGame = false;
   int currentTile = 0;
   int currentRow = 0;
   List<TileModel> tilesEntered = [];
@@ -14,6 +15,8 @@ class Controller extends ChangeNotifier {
   }
 
   void setKeyTapped({required String value}){
+    if (wonGame) return;
+    
     if (value == 'ENTER'){
       if (currentTile % 5 == 0 && currentTile != 0) {
         checkWord();
@@ -30,6 +33,21 @@ class Controller extends ChangeNotifier {
         currentTile++;
       }
     }
+    notifyListeners();
+  }
+
+  void restartGame() {
+    wonGame = false;
+    currentTile = 0;
+    currentRow = 0;
+
+    for (int i = 0; i < answerKeyHashmap.length; i++) {
+      String key = answerKeyHashmap.keys.elementAt(i);
+      answerKeyHashmap.update(key, (value) => AnswerType.notAnswered);
+    }
+
+    tilesEntered.clear();
+    correctWord = "";
     notifyListeners();
   }
 
@@ -55,6 +73,7 @@ class Controller extends ChangeNotifier {
       }
       currentRow++;
       notifyListeners();
+      wonGame = true;
       return;
     }
 
@@ -88,6 +107,7 @@ class Controller extends ChangeNotifier {
         answerKeyHashmap.update(tilesEntered[i].letter, (value) => AnswerType.incorrect);
       }
     }
+
     currentRow++;
     notifyListeners();
   }

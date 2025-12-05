@@ -17,16 +17,12 @@ const Color keyboardColorContainsYellow = Color.fromARGB(255, 201, 180, 87);
 const Color keyboardColorIncorrectGrey = Color.fromARGB(255, 133, 133, 133);
 const Color keyboardColorDefaultGrey = Color.fromARGB(255, 211, 211, 211);
 
-ThemeData ifqhTheme = ThemeData(
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.white,
-    titleTextStyle: TextStyle(
-      color: Colors.black,
-      fontSize: 20,
-      fontWeight: FontWeight.w600,
-    ),
-  )
-);
+const lightThemeLightShade = Color.fromARGB(255, 211, 214, 215);
+const lightThemeDarkShade = Color.fromARGB(255, 120, 124, 127);
+
+const darkThemeLightShade = Color.fromARGB(255, 130, 131, 133);
+const darkThemeDarkShade = Color.fromARGB(255, 58, 58, 60);
+
 
 // type hashmap will contain the states of all the keys depending on the word
   // grid.
